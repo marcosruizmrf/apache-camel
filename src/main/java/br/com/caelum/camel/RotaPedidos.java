@@ -14,6 +14,10 @@ public class RotaPedidos {
 			@Override
 			public void configure() throws Exception {
 				from("file:pedidos?delay=5s&noop=true"). //não apaga arquivo da pasta pedido
+				split().
+					xpath("/pedido/itens/item").
+					log("${body}").
+				filter().xpath("/item/formato[text()='EBOOK']").
 					log("${id}").   					 //- ${body} mostrar body do xml
 					marshal().xmljson().
 					log("${body}").						 //transformar xml em json
@@ -26,7 +30,6 @@ public class RotaPedidos {
 		context.start();
 		Thread.sleep(20000);
 		context.stop();
-		
-
+	
 	}	
 }
